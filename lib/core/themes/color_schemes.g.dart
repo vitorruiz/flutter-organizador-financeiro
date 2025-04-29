@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+part of 'themes.dart';
 
-const defaultLightColorScheme = ColorScheme(
+const _lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: Color(0xFF356B09),
   onPrimary: Color(0xFFFFFFFF),
@@ -32,7 +32,7 @@ const defaultLightColorScheme = ColorScheme(
   surfaceTint: Color(0xFF356B09),
 );
 
-const defaultDarkColorScheme = ColorScheme(
+const _darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Color(0xFF9AD76D),
   onPrimary: Color(0xFF173800),

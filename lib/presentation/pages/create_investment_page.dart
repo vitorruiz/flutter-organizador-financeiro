@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meu_patrimonio/common/extensions.dart';
 import 'package:meu_patrimonio/common/form_validator.dart';
 import 'package:meu_patrimonio/common/utils.dart';
-import 'package:meu_patrimonio/data/model/investment.dart';
-import 'package:meu_patrimonio/data/repository/investment_repository.dart';
-import 'package:meu_patrimonio/widgets/buttons.dart';
+import 'package:meu_patrimonio/domain/entities/investment.dart';
+import 'package:meu_patrimonio/presentation/blocs/investment_notifier.dart';
+import 'package:meu_patrimonio/presentation/widgets/buttons.dart';
 
-class CreateInvestmentPage extends StatefulWidget {
-  const CreateInvestmentPage({Key? key, this.investment}) : super(key: key);
+class CreateInvestmentPage extends ConsumerStatefulWidget {
+  const CreateInvestmentPage({super.key, this.investment});
 
   final Investment? investment;
 
   @override
-  State<CreateInvestmentPage> createState() => _CreateInvestmentPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _CreateInvestmentState();
 }
 
-class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormValidator {
+class _CreateInvestmentState extends ConsumerState<CreateInvestmentPage> with FormValidator {
   final _formKey = GlobalKey<FormState>();
-  final _repository = InvestmentRepository();
+  InvestmentNotifier? _investmentNotifier;
 
   Investment? _investment;
   bool _isEditing = false;
@@ -33,6 +34,7 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
   @override
   void initState() {
     super.initState();
+    _investmentNotifier = ref.read(investmentListProvider.notifier);
     _investment = widget.investment;
     _isEditing = _investment != null;
 
@@ -47,23 +49,26 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
 
   void _showDeleteConfirmationDialog() {
     showDialog(
-        context: context,
-        builder: ((context) => AlertDialog(
-              title: Text("Excluir ${_investment?.name}?"),
-              content: Text("Deseja realmente excluir permanentemente o investimento ${_investment?.name}"),
-              actions: [
-                TextButton(
-                  onPressed: (() => Navigator.pop(context)),
-                  child: const Text('Cancelar'),
-                ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _repository.delete(_investment!.id).then((value) => Navigator.pop(context));
-                    },
-                    child: const Text('Sim'))
-              ],
-            )));
+      context: context,
+      builder:
+          ((context) => AlertDialog(
+            title: Text("Excluir ${_investment?.name}?"),
+            content: Text("Deseja realmente excluir permanentemente o investimento ${_investment?.name}"),
+            actions: [
+              TextButton(onPressed: (() => Navigator.pop(context)), child: const Text('Cancelar')),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // _repository.delete(_investment!.id).then((value) => Navigator.pop(context));
+                  // _repository.delete(_investment!.id);
+                  _investmentNotifier?.delete(_investment!.id);
+                  Navigator.pop(context);
+                },
+                child: const Text('Sim'),
+              ),
+            ],
+          )),
+    );
   }
 
   void _handleBalancePriceChanges() {
@@ -82,30 +87,25 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
     final price = _priceTextController.text.toDoubleWithoutCurrency();
     final balance = _balanceTextController.text.toDoubleWithoutCurrency();
 
-    if (_isEditing) {
-      _repository
-          .updateInvestment(
-            id: _investment!.id,
-            averagePrice: averagePrice ?? 0,
-            quantity: quantity,
-            price: price != 0 ? price : null,
-            balance: balance != 0 ? balance : null,
-          )
-          .then((value) => Navigator.pop(context));
+    if (_investment == null) {
+      _investment = Investment(name: name, price: price ?? 0, averagePrice: averagePrice ?? 0, quantity: quantity);
     } else {
-      _repository
-          .createInvestment(
-            name: name,
-            averagePrice: averagePrice ?? 0,
-            quantity: quantity,
-            price: price != 0 ? price : null,
-            balance: balance != 0 ? balance : null,
-          )
-          .then((value) => Navigator.pop(context))
-          .catchError((err) {
-        debugPrint(err);
-      });
+      _investment?.averagePrice = averagePrice ?? 0;
+      _investment?.quantity = quantity;
+      _investment?.price = price ?? 0;
     }
+
+    _investmentNotifier?.saveOrUpdate(_investment!).then((value) => {if (mounted) Navigator.pop(context)});
+
+    // if (_isEditing) {
+    //   if (_repository.update(_investment!.id, _investment!.name, price ?? 0, averagePrice ?? 0, quantity)) {
+    //     Navigator.pop(context);
+    //   }
+    // } else {
+    //   if (_repository.create(name, price ?? 0, averagePrice ?? 0, quantity)) {
+    //     Navigator.pop(context);
+    //   }
+    // }
   }
 
   @override
@@ -123,10 +123,7 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
                   visible: !_isEditing,
                   child: TextFormField(
                     controller: _nameTextController,
-                    decoration: const InputDecoration(
-                      labelText: "Nome",
-                      border: OutlineInputBorder(),
-                    ),
+                    decoration: const InputDecoration(labelText: "Nome", border: OutlineInputBorder()),
                     validator: _isEditing ? null : isNotEmpty,
                   ),
                 ),
@@ -134,56 +131,34 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
                 TextFormField(
                   controller: _averagePriceTextController,
                   inputFormatters: [currencyInputFormatter],
-                  decoration: const InputDecoration(
-                    labelText: "Preço médio",
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: const InputDecoration(labelText: "Preço médio", border: OutlineInputBorder()),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => combineValidations([
-                    () => isNotEmpty(value),
-                    () => isValidDecimal(value?.removeCurrencyFormat()),
-                  ]),
+                  validator: (value) => combineValidations([() => isNotEmpty(value), () => isValidDecimal(value?.removeCurrencyFormat())]),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _quantityTextController,
-                  decoration: const InputDecoration(
-                    labelText: "Quantidade/Cotas",
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: const InputDecoration(labelText: "Quantidade/Cotas", border: OutlineInputBorder()),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => combineValidations([
-                    () => isNotEmpty(value),
-                    () => isValidDecimal(value),
-                  ]),
+                  validator: (value) => combineValidations([() => isNotEmpty(value), () => isValidDecimal(value)]),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   enabled: _shouldInputPrice,
                   controller: _priceTextController,
                   inputFormatters: [currencyInputFormatter],
-                  decoration: const InputDecoration(
-                    labelText: "Preço atual",
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: const InputDecoration(labelText: "Preço atual", border: OutlineInputBorder()),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => combineValidations([
-                    () => isValidDecimal(value?.removeCurrencyFormat()),
-                  ]),
+                  validator: (value) => combineValidations([() => isValidDecimal(value?.removeCurrencyFormat())]),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   enabled: _shouldInputBalance,
                   controller: _balanceTextController,
                   inputFormatters: [currencyInputFormatter],
-                  decoration: const InputDecoration(
-                    labelText: "Saldo atual",
-                    border: OutlineInputBorder(),
-                  ),
+                  decoration: const InputDecoration(labelText: "Saldo atual", border: OutlineInputBorder()),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => combineValidations([
-                    () => isValidDecimal(value?.removeCurrencyFormat()),
-                  ]),
+                  validator: (value) => combineValidations([() => isValidDecimal(value?.removeCurrencyFormat())]),
                 ),
                 const SizedBox(height: 24),
                 PrimaryButton(
@@ -203,7 +178,7 @@ class _CreateInvestmentPageState extends State<CreateInvestmentPage> with FormVa
                     },
                     text: "Excluir",
                   ),
-                )
+                ),
               ],
             ),
           ),
