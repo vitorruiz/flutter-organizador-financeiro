@@ -1,0 +1,111 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8655493933260001259",
+      "lastPropertyId": "4:7802499258600519140",
+      "name": "AccountBalanceModel",
+      "properties": [
+        {
+          "id": "2:3643973412398762034",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:3244349508305086520",
+          "name": "balance",
+          "type": 8
+        },
+        {
+          "id": "4:7802499258600519140",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:5766444206923592438",
+      "lastPropertyId": "3:5076139357253437080",
+      "name": "InvestmentCategoryModel",
+      "properties": [
+        {
+          "id": "2:7697373102988239756",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "3:5076139357253437080",
+          "name": "name",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:1587952917490308533",
+      "lastPropertyId": "7:5888586994069415328",
+      "name": "InvestmentModel",
+      "properties": [
+        {
+          "id": "2:2133601920266520084",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "3:3810698788236716327",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:7926085827161714460",
+          "name": "price",
+          "type": 8
+        },
+        {
+          "id": "5:8404021483014432959",
+          "name": "averagePrice",
+          "type": 8
+        },
+        {
+          "id": "6:3224617259458797731",
+          "name": "quantity",
+          "type": 8
+        },
+        {
+          "id": "7:5888586994069415328",
+          "name": "categoryId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "4:7556552766392451763",
+          "relationTarget": "InvestmentCategoryModel"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:1587952917490308533",
+  "lastIndexId": "4:7556552766392451763",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [
+    6061803532507860921,
+    5578348073718933208,
+    7526836149251142061
+  ],
+  "retiredPropertyUids": [
+    5442701740373731167,
+    7001073841103006385,
+    8010071139626763740
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

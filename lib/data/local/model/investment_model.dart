@@ -1,25 +1,33 @@
-import 'package:hive/hive.dart';
+import 'package:meu_patrimonio/data/local/model/investment_category_model.dart';
 import 'package:meu_patrimonio/domain/entities/investment.dart';
+import 'package:meu_patrimonio/domain/entities/investment_category.dart';
+import 'package:objectbox/objectbox.dart';
 
-part 'investment_model.g.dart';
+@Entity()
+class InvestmentModel {
+  @Id()
+  int id = 0;
 
-@HiveType(typeId: 1)
-class InvestmentModel extends HiveObject {
-  @HiveField(0)
-  String id;
-  @HiveField(1)
   String name;
-  @HiveField(2)
+
   double price;
-  @HiveField(3)
+
   double averagePrice;
-  @HiveField(4)
+
   double quantity;
 
-  InvestmentModel({required this.id, required this.name, required this.price, required this.averagePrice, required this.quantity});
+  final category = ToOne<InvestmentCategoryModel>();
 
-  Investment toDomain() {
-    return Investment(id: id, name: name, averagePrice: averagePrice, price: price, quantity: quantity);
+  InvestmentModel({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.averagePrice,
+    required this.quantity,
+  });
+
+  Investment toDomain(InvestmentCategory category) {
+    return Investment(id: id, name: name, averagePrice: averagePrice, price: price, quantity: quantity, category: category);
   }
 
   factory InvestmentModel.fromDomain(Investment investment) => InvestmentModel(
@@ -28,5 +36,5 @@ class InvestmentModel extends HiveObject {
     averagePrice: investment.averagePrice,
     price: investment.price,
     quantity: investment.quantity,
-  );
+  )..category.target = InvestmentCategoryModel.fromDomain(investment.category);
 }

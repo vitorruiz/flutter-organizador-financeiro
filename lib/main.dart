@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:meu_patrimonio/data/local/model/account_balance_model.dart';
-import 'package:meu_patrimonio/data/local/model/investment_model.dart';
-import 'package:meu_patrimonio/presentation/app_widget.dart';
+import 'package:logging/logging.dart';
+import 'package:meu_patrimonio/config/dependencies.dart';
+import 'package:meu_patrimonio/data/local/objectbox.dart';
+import 'package:meu_patrimonio/ui/app_widget.dart';
+import 'package:provider/provider.dart';
+
+late ObjectBox objectbox;
 
 Future<void> main() async {
+  Logger.root.level = Level.ALL;
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializa o Hive para armazenamento local
-  await Hive.initFlutter();
+  objectbox = await ObjectBox.create();
 
-  // Register adapters Hive
-  Hive.registerAdapter(InvestmentModelAdapter());
-  Hive.registerAdapter(AccountBalanceModelAdapter());
-
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(MultiProvider(providers: providers, child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

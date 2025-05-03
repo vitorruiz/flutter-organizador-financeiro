@@ -1,7 +1,7 @@
 import 'package:meu_patrimonio/domain/entities/investment.dart';
 
 abstract class InvestmentRepository {
-  Future<void> create(Investment investment);
-  Future<void> remove(String id);
+  Future<int> create(Investment investment);
+  Future<bool> remove(int id);
   Future<List<Investment>> getAll();
 }

@@ -1,28 +1,27 @@
-import 'package:hive/hive.dart';
 import 'package:meu_patrimonio/data/local/model/investment_model.dart';
 import 'package:meu_patrimonio/domain/entities/investment.dart';
+import 'package:meu_patrimonio/domain/entities/investment_category.dart';
 import 'package:meu_patrimonio/domain/repository/investment_repository.dart';
+import 'package:meu_patrimonio/main.dart';
 
 class InvestmentRepositoryImpl implements InvestmentRepository {
-  static const _box = "investments";
-
-  Future<Box<InvestmentModel>> _investments() async => Hive.openBox<InvestmentModel>(_box);
+  final _box = objectbox.store.box<InvestmentModel>();
 
   @override
-  Future<void> create(Investment investment) async {
-    final box = await _investments();
-    return box.put(investment.id, InvestmentModel.fromDomain(investment));
+  Future<int> create(Investment investment) async {
+    return _box.put(InvestmentModel.fromDomain(investment));
   }
 
   @override
   Future<List<Investment>> getAll() async {
-    final box = await _investments();
-    return box.values.map((model) => model.toDomain()).toList();
+    return _box.getAll().map((model) {
+      final category = model.category.target?.toDomain() ?? InvestmentCategory(name: 'Sem categoria');
+      return model.toDomain(category);
+    }).toList();
   }
 
   @override
-  Future<void> remove(String id) async {
-    final box = await _investments();
-    return box.delete(id);
+  Future<bool> remove(int id) async {
+    return _box.remove(id);
   }
 }

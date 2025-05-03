@@ -1,14 +1,15 @@
-import 'package:uuid/uuid.dart';
+import 'package:meu_patrimonio/domain/entities/investment_category.dart';
 
 class Investment {
-  String id;
+  int id;
   String name;
   double price;
   double averagePrice;
   double quantity;
+  InvestmentCategory category;
 
-  Investment({String? id, required this.name, required this.price, required this.averagePrice, required this.quantity})
-    : id = id ?? const Uuid().v4();
+  Investment({int? id, required this.name, required this.price, required this.averagePrice, required this.quantity, required this.category})
+    : id = id ?? 0;
 
   double amount() {
     return averagePrice * quantity;
