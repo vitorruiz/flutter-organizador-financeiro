@@ -1,9 +1,8 @@
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-const String _realSign = 'R\$';
+const String _realSign = r'R$';
 
 extension StringExt on String {
-
   String removeCurrencyFormat() {
     return replaceAll('$_realSign ', '').replaceAll('.', '').replaceAll(',', '.');
   }
@@ -22,12 +21,13 @@ extension StringExt on String {
 }
 
 extension DoubleExt on double {
-
   String toCurrency() {
-    return toString().replaceAll('.', ',').toCurrencyString(
-            leadingSymbol: _realSign,
-            useSymbolPadding: true,
-            thousandSeparator: ThousandSeparator.Period,
-          );
+    return toString()
+        .replaceAll('.', ',')
+        .toCurrencyString(
+          leadingSymbol: _realSign,
+          useSymbolPadding: true,
+          thousandSeparator: ThousandSeparator.Period,
+        );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:meu_patrimonio/ui/investments/view_models/investments_viewmodel.dart';
-import 'package:meu_patrimonio/ui/investments/widgets/create_investment_screen.dart';
-import 'package:meu_patrimonio/ui/widgets/item_summary_card.dart';
 import 'package:provider/provider.dart';
+
+import '../../../domain/entities/investment.dart';
+import '../../widgets/item_summary_card.dart';
+import '../view_models/investments_viewmodel.dart';
+import 'create_investment_screen.dart';
 
 class InvestmentListScreen extends StatelessWidget {
   const InvestmentListScreen({super.key});
@@ -16,7 +18,7 @@ class InvestmentListScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: ListenableBuilder(
           listenable: viewModel.loadInvestmentList,
-          builder: (context, child) {
+          builder: (BuildContext context, Widget? child) {
             if (viewModel.loadInvestmentList.completed && child != null) {
               return child;
             }
@@ -28,32 +30,36 @@ class InvestmentListScreen extends StatelessWidget {
             if (viewModel.investmentList.isNotEmpty) {
               return ListView.separated(
                 itemCount: viewModel.investmentList.length,
-                itemBuilder: (context, index) {
-                  final investment = viewModel.investmentList[index];
+                itemBuilder: (BuildContext context, int index) {
+                  final Investment investment = viewModel.investmentList[index];
                   return ItemSummaryCard(
                     title: investment.name,
                     balance: investment.balance(),
                     rentability: investment.formattedRentability(),
                     onClick: () async {
-                      await Navigator.of(
-                        context,
-                      ).push(MaterialPageRoute(builder: (context) => CreateInvestmentScreen(investment: investment)));
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => CreateInvestmentScreen(investment: investment),
+                        ),
+                      );
                     },
                   );
                 },
-                separatorBuilder: (context, index) {
+                separatorBuilder: (BuildContext context, int index) {
                   return const SizedBox(height: 10);
                 },
               );
             }
 
-            return const Center(child: Text("Você ainda não possui nenhum investmento"));
+            return const Center(child: Text('Você ainda não possui nenhum investmento'));
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CreateInvestmentScreen()));
+          await Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (BuildContext context) => const CreateInvestmentScreen()));
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

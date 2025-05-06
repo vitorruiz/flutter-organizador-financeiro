@@ -1,4 +1,4 @@
-import 'package:meu_patrimonio/domain/entities/investment_category.dart';
+import '../entities/investment_category.dart';
 
 abstract class InvestmentCategoryRepository {
   Future<List<InvestmentCategory>> getAll();

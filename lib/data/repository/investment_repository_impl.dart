@@ -1,11 +1,12 @@
-import 'package:meu_patrimonio/data/local/model/investment_model.dart';
-import 'package:meu_patrimonio/domain/entities/investment.dart';
-import 'package:meu_patrimonio/domain/entities/investment_category.dart';
-import 'package:meu_patrimonio/domain/repository/investment_repository.dart';
-import 'package:meu_patrimonio/main.dart';
+import 'package:objectbox/src/native/box.dart';
+
+import '../../domain/entities/investment.dart';
+import '../../domain/repository/investment_repository.dart';
+import '../../main.dart';
+import '../local/model/investment_model.dart';
 
 class InvestmentRepositoryImpl implements InvestmentRepository {
-  final _box = objectbox.store.box<InvestmentModel>();
+  final Box<InvestmentModel> _box = objectbox.store.box<InvestmentModel>();
 
   @override
   Future<int> create(Investment investment) async {
@@ -14,10 +15,7 @@ class InvestmentRepositoryImpl implements InvestmentRepository {
 
   @override
   Future<List<Investment>> getAll() async {
-    return _box.getAll().map((model) {
-      final category = model.category.target?.toDomain() ?? InvestmentCategory(name: 'Sem categoria');
-      return model.toDomain(category);
-    }).toList();
+    return _box.getAll().map((InvestmentModel m) => m.toDomain()).toList();
   }
 
   @override

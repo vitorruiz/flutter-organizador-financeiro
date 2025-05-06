@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meu_patrimonio/ui/investment_category/widgets/investment_category_screen.dart';
+import '../investment_category/widgets/investment_category_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -9,12 +9,15 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Configurações')),
       body: ListView(
-        children: [
+        children: <Widget>[
           ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Categorias de Investimentos'),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const InvestmentCategoryScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const InvestmentCategoryScreen()),
+              );
             },
           ),
         ],

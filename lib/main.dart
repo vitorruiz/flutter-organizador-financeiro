@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:meu_patrimonio/config/dependencies.dart';
-import 'package:meu_patrimonio/data/local/objectbox.dart';
-import 'package:meu_patrimonio/ui/app_widget.dart';
 import 'package:provider/provider.dart';
+
+import 'config/dependencies.dart';
+import 'data/local/objectbox.dart';
+import 'ui/app_widget.dart';
 
 late ObjectBox objectbox;
 
@@ -14,7 +15,7 @@ Future<void> main() async {
 
   objectbox = await ObjectBox.create();
 
-  runApp(MultiProvider(providers: providers, child: MyApp()));
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

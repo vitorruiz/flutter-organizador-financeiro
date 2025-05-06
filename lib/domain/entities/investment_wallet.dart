@@ -1,10 +1,10 @@
-import 'package:meu_patrimonio/domain/entities/investment.dart';
-import 'package:uuid/uuid.dart';
+import 'investment_wallet_option.dart';
 
 class InvestmentWallet {
-  String id;
-  String name;
-  List<Investment> investments = [];
 
-  InvestmentWallet({String? id, required this.name}) : id = id ?? const Uuid().v4();
+  InvestmentWallet({int? id, required this.name, required this.valueToInvest}) : id = id ?? 0;
+  int id;
+  String name;
+  double valueToInvest;
+  List<InvestmentWalletOption> options = <InvestmentWalletOption>[];
 }

@@ -1,15 +1,17 @@
-import 'package:meu_patrimonio/domain/entities/investment_category.dart';
-
 class Investment {
+
+  Investment({
+    int? id,
+    required this.name,
+    required this.price,
+    required this.averagePrice,
+    required this.quantity,
+  }) : id = id ?? 0;
   int id;
   String name;
   double price;
   double averagePrice;
   double quantity;
-  InvestmentCategory category;
-
-  Investment({int? id, required this.name, required this.price, required this.averagePrice, required this.quantity, required this.category})
-    : id = id ?? 0;
 
   double amount() {
     return averagePrice * quantity;
@@ -24,6 +26,6 @@ class Investment {
   }
 
   String formattedRentability() {
-    return "${(rentability() * 100).toStringAsFixed(2)}%";
+    return '${(rentability() * 100).toStringAsFixed(2)}%';
   }
 }

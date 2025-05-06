@@ -1,10 +1,12 @@
-import 'package:meu_patrimonio/data/local/model/account_balance_model.dart';
-import 'package:meu_patrimonio/domain/entities/account_balance.dart';
-import 'package:meu_patrimonio/domain/repository/account_balance_repository.dart';
-import 'package:meu_patrimonio/main.dart';
+import 'package:objectbox/src/native/box.dart';
+
+import '../../domain/entities/account_balance.dart';
+import '../../domain/repository/account_balance_repository.dart';
+import '../../main.dart';
+import '../local/model/account_balance_model.dart';
 
 class AccountBalanceRepositoryImpl implements AccountBalanceRepository {
-  final _box = objectbox.store.box<AccountBalanceModel>();
+  final Box<AccountBalanceModel> _box = objectbox.store.box<AccountBalanceModel>();
 
   @override
   Future<int> create(AccountBalance account) async {
@@ -13,7 +15,7 @@ class AccountBalanceRepositoryImpl implements AccountBalanceRepository {
 
   @override
   Future<List<AccountBalance>> getAll() async {
-    return _box.getAll().map((model) => model.toDomain()).toList();
+    return _box.getAll().map((AccountBalanceModel model) => model.toDomain()).toList();
   }
 
   @override

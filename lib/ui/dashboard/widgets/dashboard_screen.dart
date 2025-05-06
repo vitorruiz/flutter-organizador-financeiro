@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:meu_patrimonio/common/extensions.dart';
-import 'package:meu_patrimonio/common/utils.dart';
-import 'package:meu_patrimonio/ui/dashboard/view_models/dashboard_viewmodel.dart';
 import 'package:provider/provider.dart';
+
+import '../../../common/extensions.dart';
+import '../../../common/utils.dart';
+import '../view_models/dashboard_viewmodel.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
-
-  // final DashboardViewmodel viewModel;
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -29,26 +28,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: Container(
         padding: const EdgeInsets.all(24.0),
         child: Column(
-          children: [
+          children: <Widget>[
             ListenableBuilder(
               listenable: viewModel.loadTotalBalance,
-              builder: (context, child) {
+              builder: (BuildContext context, Widget? child) {
                 if (viewModel.loadTotalBalance.completed && child != null) {
                   return child;
                 }
 
-                return _cardBalanceResume(context, "Saldo total", viewModel.totalBalance);
+                return _cardBalanceResume(context, 'Saldo total', viewModel.totalBalance);
               },
             ),
             const SizedBox(height: 16.0),
             ListenableBuilder(
               listenable: viewModel.loadTotalBalance,
-              builder: (context, child) {
+              builder: (BuildContext context, Widget? child) {
                 if (viewModel.loadTotalBalance.completed && child != null) {
                   return child;
                 }
 
-                return _buildInvestmentsCard(context, viewModel.totalInvestmentsDto.balance, viewModel.totalInvestmentsDto.rentability);
+                return _buildInvestmentsCard(
+                  context,
+                  viewModel.totalInvestmentsDto.balance,
+                  viewModel.totalInvestmentsDto.rentability,
+                );
               },
             ),
           ],
@@ -64,11 +67,10 @@ Widget _cardBalanceResume(BuildContext context, String title, double balance) {
       padding: const EdgeInsets.all(16.0),
       child: Center(
         child: Column(
-          children: [
+          children: <Widget>[
             Text(title, style: Theme.of(context).textTheme.titleLarge),
             Text(
               formatToCurrency(balance),
-              // MoneyFormatter(amount: balance, settings: moneyFormatterSettings).output.symbolOnLeft,
               style: Theme.of(context).textTheme.displaySmall,
             ),
           ],
@@ -84,10 +86,10 @@ Widget _buildInvestmentsCard(BuildContext context, double balance, String rentab
       padding: const EdgeInsets.all(16.0),
       child: Center(
         child: Column(
-          children: [
+          children: <Widget>[
             Text('Investimentos', style: Theme.of(context).textTheme.titleLarge),
             Text(balance.toCurrency(), style: Theme.of(context).textTheme.displaySmall),
-            Text("Rentabilidade: $rentability", style: Theme.of(context).textTheme.bodyLarge),
+            Text('Rentabilidade: $rentability', style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
       ),

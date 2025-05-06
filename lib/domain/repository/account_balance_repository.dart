@@ -1,4 +1,4 @@
-import 'package:meu_patrimonio/domain/entities/account_balance.dart';
+import '../entities/account_balance.dart';
 
 abstract class AccountBalanceRepository {
   Future<int> create(AccountBalance account);

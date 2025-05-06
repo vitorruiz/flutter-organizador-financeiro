@@ -1,9 +1,9 @@
 class InvestmentCategory {
-  final int id;
-  final String name;
   // final String color;
 
   InvestmentCategory({int? id, required this.name}) : id = id ?? 0;
+  final int id;
+  final String name;
 
   @override
   bool operator ==(Object other) {

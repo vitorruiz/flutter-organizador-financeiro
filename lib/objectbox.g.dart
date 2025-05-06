@@ -17,6 +17,8 @@ import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 import 'data/local/model/account_balance_model.dart';
 import 'data/local/model/investment_category_model.dart';
 import 'data/local/model/investment_model.dart';
+import 'data/local/model/investment_wallet_model.dart';
+import 'data/local/model/investment_wallet_option_model.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -94,14 +96,79 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(6, 3224617259458797731),
             name: 'quantity',
             type: 8,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(4, 7953772479442935243),
+      name: 'InvestmentWalletModel',
+      lastPropertyId: const obx_int.IdUid(3, 7643682603198371249),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 3465572225896881662),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 8716950187098648659),
+            name: 'name',
+            type: 9,
             flags: 0),
         obx_int.ModelProperty(
-            id: const obx_int.IdUid(7, 5888586994069415328),
-            name: 'categoryId',
+            id: const obx_int.IdUid(3, 7643682603198371249),
+            name: 'valueToInvest',
+            type: 8,
+            flags: 0)
+      ],
+      relations: <obx_int.ModelRelation>[
+        obx_int.ModelRelation(
+            id: const obx_int.IdUid(2, 6121365213889748956),
+            name: 'options',
+            targetId: const obx_int.IdUid(5, 7123946359697207595))
+      ],
+      backlinks: <obx_int.ModelBacklink>[]),
+  obx_int.ModelEntity(
+      id: const obx_int.IdUid(5, 7123946359697207595),
+      name: 'InvestmentWalletOptionModel',
+      lastPropertyId: const obx_int.IdUid(6, 1195789990701029307),
+      flags: 0,
+      properties: <obx_int.ModelProperty>[
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(1, 60847730416863526),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(2, 816031418111588446),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(3, 7175800870949121459),
+            name: 'walletPercentage',
+            type: 8,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(4, 7011298192505932273),
+            name: 'value',
+            type: 8,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(5, 6753862340196896543),
+            name: 'walletId',
             type: 11,
             flags: 520,
-            indexId: const obx_int.IdUid(4, 7556552766392451763),
-            relationTarget: 'InvestmentCategoryModel')
+            indexId: const obx_int.IdUid(5, 4529310669691677455),
+            relationTarget: 'InvestmentWalletModel'),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(6, 1195789990701029307),
+            name: 'investmentId',
+            type: 11,
+            flags: 520,
+            indexId: const obx_int.IdUid(6, 1189838701976693809),
+            relationTarget: 'InvestmentModel')
       ],
       relations: <obx_int.ModelRelation>[],
       backlinks: <obx_int.ModelBacklink>[])
@@ -142,22 +209,24 @@ Future<obx.Store> openStore(
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
       entities: _entities,
-      lastEntityId: const obx_int.IdUid(3, 1587952917490308533),
-      lastIndexId: const obx_int.IdUid(4, 7556552766392451763),
-      lastRelationId: const obx_int.IdUid(0, 0),
+      lastEntityId: const obx_int.IdUid(5, 7123946359697207595),
+      lastIndexId: const obx_int.IdUid(6, 1189838701976693809),
+      lastRelationId: const obx_int.IdUid(2, 6121365213889748956),
       lastSequenceId: const obx_int.IdUid(0, 0),
       retiredEntityUids: const [],
       retiredIndexUids: const [
         6061803532507860921,
         5578348073718933208,
-        7526836149251142061
+        7526836149251142061,
+        7556552766392451763
       ],
       retiredPropertyUids: const [
         5442701740373731167,
         7001073841103006385,
-        8010071139626763740
+        8010071139626763740,
+        5888586994069415328
       ],
-      retiredRelationUids: const [],
+      retiredRelationUids: const [4767612180573789599],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
@@ -223,7 +292,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         }),
     InvestmentModel: obx_int.EntityDefinition<InvestmentModel>(
         model: _entities[2],
-        toOneRelations: (InvestmentModel object) => [object.category],
+        toOneRelations: (InvestmentModel object) => [],
         toManyRelations: (InvestmentModel object) => {},
         getId: (InvestmentModel object) => object.id,
         setId: (InvestmentModel object, int id) {
@@ -237,7 +306,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fbb.addFloat64(3, object.price);
           fbb.addFloat64(4, object.averagePrice);
           fbb.addFloat64(5, object.quantity);
-          fbb.addInt64(6, object.category.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -260,11 +328,92 @@ obx_int.ModelDefinition getObjectBoxModel() {
               price: priceParam,
               averagePrice: averagePriceParam,
               quantity: quantityParam);
-          object.category.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0);
-          object.category.attach(store);
+
           return object;
-        })
+        }),
+    InvestmentWalletModel: obx_int.EntityDefinition<InvestmentWalletModel>(
+        model: _entities[3],
+        toOneRelations: (InvestmentWalletModel object) => [],
+        toManyRelations: (InvestmentWalletModel object) => {
+              obx_int.RelInfo<InvestmentWalletModel>.toMany(2, object.id):
+                  object.options
+            },
+        getId: (InvestmentWalletModel object) => object.id,
+        setId: (InvestmentWalletModel object, int id) {
+          object.id = id;
+        },
+        objectToFB: (InvestmentWalletModel object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(4);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addFloat64(2, object.valueToInvest);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (obx.Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final valueToInvestParam =
+              const fb.Float64Reader().vTableGet(buffer, rootOffset, 8, 0);
+          final object = InvestmentWalletModel(
+              id: idParam, name: nameParam, valueToInvest: valueToInvestParam);
+          obx_int.InternalToManyAccess.setRelInfo<InvestmentWalletModel>(
+              object.options,
+              store,
+              obx_int.RelInfo<InvestmentWalletModel>.toMany(2, object.id));
+          return object;
+        }),
+    InvestmentWalletOptionModel:
+        obx_int.EntityDefinition<InvestmentWalletOptionModel>(
+            model: _entities[4],
+            toOneRelations: (InvestmentWalletOptionModel object) =>
+                [object.wallet, object.investment],
+            toManyRelations: (InvestmentWalletOptionModel object) => {},
+            getId: (InvestmentWalletOptionModel object) => object.id,
+            setId: (InvestmentWalletOptionModel object, int id) {
+              object.id = id;
+            },
+            objectToFB: (InvestmentWalletOptionModel object, fb.Builder fbb) {
+              final nameOffset = fbb.writeString(object.name);
+              fbb.startTable(7);
+              fbb.addInt64(0, object.id);
+              fbb.addOffset(1, nameOffset);
+              fbb.addFloat64(2, object.walletPercentage);
+              fbb.addFloat64(3, object.value);
+              fbb.addInt64(4, object.wallet.targetId);
+              fbb.addInt64(5, object.investment.targetId);
+              fbb.finish(fbb.endTable());
+              return object.id;
+            },
+            objectFromFB: (obx.Store store, ByteData fbData) {
+              final buffer = fb.BufferContext(fbData);
+              final rootOffset = buffer.derefObject(0);
+              final idParam =
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              final nameParam = const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, '');
+              final walletPercentageParam =
+                  const fb.Float64Reader().vTableGet(buffer, rootOffset, 8, 0);
+              final valueParam =
+                  const fb.Float64Reader().vTableGet(buffer, rootOffset, 10, 0);
+              final object = InvestmentWalletOptionModel(
+                  id: idParam,
+                  name: nameParam,
+                  walletPercentage: walletPercentageParam,
+                  value: valueParam);
+              object.wallet.targetId =
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+              object.wallet.attach(store);
+              object.investment.targetId =
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
+              object.investment.attach(store);
+              return object;
+            })
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -317,9 +466,52 @@ class InvestmentModel_ {
   /// See [InvestmentModel.quantity].
   static final quantity =
       obx.QueryDoubleProperty<InvestmentModel>(_entities[2].properties[4]);
+}
 
-  /// See [InvestmentModel.category].
-  static final category =
-      obx.QueryRelationToOne<InvestmentModel, InvestmentCategoryModel>(
-          _entities[2].properties[5]);
+/// [InvestmentWalletModel] entity fields to define ObjectBox queries.
+class InvestmentWalletModel_ {
+  /// See [InvestmentWalletModel.id].
+  static final id = obx.QueryIntegerProperty<InvestmentWalletModel>(
+      _entities[3].properties[0]);
+
+  /// See [InvestmentWalletModel.name].
+  static final name = obx.QueryStringProperty<InvestmentWalletModel>(
+      _entities[3].properties[1]);
+
+  /// See [InvestmentWalletModel.valueToInvest].
+  static final valueToInvest = obx.QueryDoubleProperty<InvestmentWalletModel>(
+      _entities[3].properties[2]);
+
+  /// see [InvestmentWalletModel.options]
+  static final options = obx.QueryRelationToMany<InvestmentWalletModel,
+      InvestmentWalletOptionModel>(_entities[3].relations[0]);
+}
+
+/// [InvestmentWalletOptionModel] entity fields to define ObjectBox queries.
+class InvestmentWalletOptionModel_ {
+  /// See [InvestmentWalletOptionModel.id].
+  static final id = obx.QueryIntegerProperty<InvestmentWalletOptionModel>(
+      _entities[4].properties[0]);
+
+  /// See [InvestmentWalletOptionModel.name].
+  static final name = obx.QueryStringProperty<InvestmentWalletOptionModel>(
+      _entities[4].properties[1]);
+
+  /// See [InvestmentWalletOptionModel.walletPercentage].
+  static final walletPercentage =
+      obx.QueryDoubleProperty<InvestmentWalletOptionModel>(
+          _entities[4].properties[2]);
+
+  /// See [InvestmentWalletOptionModel.value].
+  static final value = obx.QueryDoubleProperty<InvestmentWalletOptionModel>(
+      _entities[4].properties[3]);
+
+  /// See [InvestmentWalletOptionModel.wallet].
+  static final wallet = obx.QueryRelationToOne<InvestmentWalletOptionModel,
+      InvestmentWalletModel>(_entities[4].properties[4]);
+
+  /// See [InvestmentWalletOptionModel.investment].
+  static final investment =
+      obx.QueryRelationToOne<InvestmentWalletOptionModel, InvestmentModel>(
+          _entities[4].properties[5]);
 }

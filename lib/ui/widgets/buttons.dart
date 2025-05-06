@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 const double _buttonHeight = 48;
 
 class PrimaryButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
 
   const PrimaryButton({super.key, this.onPressed, required this.text});
+  final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +22,10 @@ class PrimaryButton extends StatelessWidget {
 }
 
 class SecondaryButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
 
   const SecondaryButton({super.key, this.onPressed, required this.text});
+  final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,10 @@ class SecondaryButton extends StatelessWidget {
 }
 
 class PrimaryTextButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
 
   const PrimaryTextButton({super.key, this.onPressed, required this.text});
+  final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +60,10 @@ class PrimaryTextButton extends StatelessWidget {
 }
 
 class ErrorTextButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
 
   const ErrorTextButton({super.key, this.onPressed, required this.text});
+  final String text;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,4 @@
-import 'package:meu_patrimonio/domain/entities/investment.dart';
+import '../entities/investment.dart';
 
 abstract class InvestmentRepository {
   Future<int> create(Investment investment);

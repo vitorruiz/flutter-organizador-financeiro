@@ -1,20 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-import 'package:meu_patrimonio/data/dto/total_invesments_dto.dart';
-import 'package:meu_patrimonio/domain/repository/account_balance_repository.dart';
-import 'package:meu_patrimonio/domain/repository/investment_repository.dart';
-import 'package:meu_patrimonio/utils/command.dart';
-import 'package:meu_patrimonio/utils/result.dart';
+
+import '../../../data/dto/total_invesments_dto.dart';
+import '../../../domain/entities/account_balance.dart';
+import '../../../domain/entities/investment.dart';
+import '../../../domain/repository/account_balance_repository.dart';
+import '../../../domain/repository/investment_repository.dart';
+import '../../../utils/command.dart';
+import '../../../utils/result.dart';
 
 class DashboardViewmodel extends ChangeNotifier {
-  DashboardViewmodel({required AccountBalanceRepository accountBalanceRepository, required InvestmentRepository investmentRepository})
-    : _accountBalanceRepository = accountBalanceRepository,
-      _investmentRepository = investmentRepository {
+  DashboardViewmodel({
+    required AccountBalanceRepository accountBalanceRepository,
+    required InvestmentRepository investmentRepository,
+  }) : _accountBalanceRepository = accountBalanceRepository,
+       _investmentRepository = investmentRepository {
     loadTotalBalance = Command0(_loadTotalBalance)..execute();
     loadTotalInvestmentsData = Command0(_loadTotalInvestmentsData)..execute();
   }
 
-  final _log = Logger('DashboardViewmodel');
+  final Logger _log = Logger('DashboardViewmodel');
 
   final AccountBalanceRepository _accountBalanceRepository;
   final InvestmentRepository _investmentRepository;
@@ -22,7 +27,7 @@ class DashboardViewmodel extends ChangeNotifier {
   double _totalBalance = 0.0;
   double get totalBalance => _totalBalance;
 
-  TotalInvestmentsDto _totalInvestmentsDto = TotalInvestmentsDto(balance: 0.0, rentability: "0%");
+  TotalInvestmentsDto _totalInvestmentsDto = TotalInvestmentsDto(balance: 0.0, rentability: '0%');
   TotalInvestmentsDto get totalInvestmentsDto => _totalInvestmentsDto;
 
   late final Command0 loadTotalBalance;
@@ -30,7 +35,7 @@ class DashboardViewmodel extends ChangeNotifier {
 
   Future<Result<void>> _loadTotalBalance() async {
     try {
-      final resultAccounts = Result.ok(await _accountBalanceRepository.getAll());
+      final Result<List<AccountBalance>> resultAccounts = Result.ok(await _accountBalanceRepository.getAll());
       switch (resultAccounts) {
         case Error():
           _log.warning('Failed to load stored ItineraryConfig', resultAccounts.error);
@@ -38,7 +43,7 @@ class DashboardViewmodel extends ChangeNotifier {
         case Ok():
       }
 
-      final resultInvestments = Result.ok(await _investmentRepository.getAll());
+      final Result<List<Investment>> resultInvestments = Result.ok(await _investmentRepository.getAll());
       switch (resultInvestments) {
         case Error():
           _log.warning('Failed to load stored ItineraryConfig', resultInvestments.error);
@@ -46,10 +51,17 @@ class DashboardViewmodel extends ChangeNotifier {
         case Ok():
       }
 
-      _totalBalance = resultAccounts.value.fold(0.0, (previousValue, element) => previousValue + element.balance)
-      + resultInvestments.value.fold(0.0, (previousValue, element) => previousValue + element.balance());
+      _totalBalance =
+          resultAccounts.value.fold(
+            0.0,
+            (double previousValue, AccountBalance element) => previousValue + element.balance,
+          ) +
+          resultInvestments.value.fold(
+            0.0,
+            (num previousValue, Investment element) => previousValue + element.balance(),
+          );
 
-      final result = Result.ok(_totalBalance);
+      final Result<double> result = Result.ok(_totalBalance);
       _log.info('Total balance loaded successfully: $_totalBalance');
 
       return result;
@@ -60,7 +72,7 @@ class DashboardViewmodel extends ChangeNotifier {
 
   Future<Result<void>> _loadTotalInvestmentsData() async {
     try {
-      final result = Result.ok(await _investmentRepository.getAll());
+      final Result<List<Investment>> result = Result.ok(await _investmentRepository.getAll());
       switch (result) {
         case Error():
           _log.warning('Failed to load stored ItineraryConfig', result.error);
@@ -68,14 +80,20 @@ class DashboardViewmodel extends ChangeNotifier {
         case Ok():
       }
 
-      double totalBalance = result.value.fold(0.0, (previousValue, element) => previousValue + element.balance());
-      double totalAmount = result.value.fold(0.0, (previousValue, element) => previousValue + element.amount());
+      final double totalBalance = result.value.fold(
+        0.0,
+        (double previousValue, Investment element) => previousValue + element.balance(),
+      );
+      final double totalAmount = result.value.fold(
+        0.0,
+        (double previousValue, Investment element) => previousValue + element.amount(),
+      );
 
-      double rentability = (totalBalance / totalAmount) - 1;
+      final double rentability = (totalBalance / totalAmount) - 1;
 
       _totalInvestmentsDto = TotalInvestmentsDto(
         balance: totalBalance,
-        rentability: "${(rentability * 100).toStringAsFixed(2)}%",
+        rentability: '${(rentability * 100).toStringAsFixed(2)}%',
       );
 
       return result;

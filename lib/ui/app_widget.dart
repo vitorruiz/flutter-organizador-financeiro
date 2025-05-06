@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:meu_patrimonio/ui/core/themes/dynamic_color_theme.dart';
-import 'package:meu_patrimonio/ui/core/themes/theme.dart';
-import 'package:meu_patrimonio/ui/home/home_screen.dart';
 import 'package:dynamic_color/dynamic_color.dart';
-import 'package:meu_patrimonio/utils/theme_util.dart';
+import 'package:flutter/material.dart';
+
+import '../utils/theme_util.dart';
+import 'core/themes/dynamic_color_theme.dart';
+import 'core/themes/theme.dart';
+import 'home/home_screen.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -13,36 +14,37 @@ class AppWidget extends StatelessWidget {
     return _getApp(context);
   }
 
-  _getApp(BuildContext context) {
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
-
-    // Retrieves the default theme for the platform
-    //TextTheme textTheme = Theme.of(context).textTheme;
+  MaterialApp _getApp(BuildContext context) {
+    final Brightness brightness = View.of(context).platformDispatcher.platformBrightness;
 
     // Use with Google Fonts package to use downloadable fonts
-    TextTheme textTheme = createTextTheme(context, "Exo 2", "Exo 2");
+    final TextTheme textTheme = createTextTheme(context, 'Exo 2', 'Exo 2');
 
-    MaterialTheme theme = MaterialTheme(textTheme);
-    return MaterialApp(title: 'Finanças pessoais', theme: brightness == Brightness.light ? theme.light() : theme.dark(), home: const HomeScreen());
+    final MaterialTheme theme = MaterialTheme(textTheme);
+    return MaterialApp(
+      title: 'Finanças pessoais',
+      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      home: const HomeScreen(),
+    );
   }
 
-  _getDynamicColorApp(BuildContext context) {
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
+  // ignore: unused_element
+  DynamicColorBuilder _getDynamicColorApp(BuildContext context) {
+    final Brightness brightness = View.of(context).platformDispatcher.platformBrightness;
 
-    // Retrieves the default theme for the platform
-    //TextTheme textTheme = Theme.of(context).textTheme;
+    final TextTheme textTheme = createTextTheme(context, 'Exo 2', 'Exo 2');
 
-    // Use with Google Fonts package to use downloadable fonts
-    TextTheme textTheme = createTextTheme(context, "Exo 2", "Exo 2");
-
-    DynamicColorTheme theme = DynamicColorTheme(textTheme);
+    final DynamicColorTheme theme = DynamicColorTheme(textTheme);
 
     return DynamicColorBuilder(
-      builder: (lightColorScheme, darkColorScheme) {
+      builder: (ColorScheme? lightColorScheme, ColorScheme? darkColorScheme) {
         return MaterialApp(
           title: 'Finanças pessoais',
-          theme: brightness == Brightness.light ? theme.lightDynamicColorTheme(lightColorScheme) : theme.darkDynamicColorTheme(darkColorScheme),
-          home: HomeScreen(),
+          theme:
+              brightness == Brightness.light
+                  ? theme.lightDynamicColorTheme(lightColorScheme)
+                  : theme.darkDynamicColorTheme(darkColorScheme),
+          home: const HomeScreen(),
         );
       },
     );

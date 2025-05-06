@@ -1,6 +1,6 @@
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-const String _realSign = 'R\$';
+const String _realSign = r'R$';
 
 final CurrencyInputFormatter currencyInputFormatter = CurrencyInputFormatter(
   leadingSymbol: _realSign,
@@ -9,10 +9,13 @@ final CurrencyInputFormatter currencyInputFormatter = CurrencyInputFormatter(
 );
 
 String formatToCurrency(double? value) {
-  return value?.toString().replaceAll('.', ',').toCurrencyString(
+  return value
+          ?.toString()
+          .replaceAll('.', ',')
+          .toCurrencyString(
             leadingSymbol: _realSign,
             useSymbolPadding: true,
             thousandSeparator: ThousandSeparator.Period,
           ) ??
-      "";
+      '';
 }
