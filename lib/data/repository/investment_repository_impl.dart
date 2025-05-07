@@ -10,6 +10,7 @@ class InvestmentRepositoryImpl implements InvestmentRepository {
 
   @override
   Future<int> create(Investment investment) async {
+    investment.updatedAt = DateTime.now().millisecondsSinceEpoch;
     return _box.put(InvestmentModel.fromDomain(investment));
   }
 

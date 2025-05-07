@@ -69,7 +69,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
       id: const obx_int.IdUid(3, 1587952917490308533),
       name: 'InvestmentModel',
-      lastPropertyId: const obx_int.IdUid(7, 5888586994069415328),
+      lastPropertyId: const obx_int.IdUid(8, 7050352512338269889),
       flags: 0,
       properties: <obx_int.ModelProperty>[
         obx_int.ModelProperty(
@@ -96,6 +96,11 @@ final _entities = <obx_int.ModelEntity>[
             id: const obx_int.IdUid(6, 3224617259458797731),
             name: 'quantity',
             type: 8,
+            flags: 0),
+        obx_int.ModelProperty(
+            id: const obx_int.IdUid(8, 7050352512338269889),
+            name: 'updatedAt',
+            type: 6,
             flags: 0)
       ],
       relations: <obx_int.ModelRelation>[],
@@ -295,12 +300,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (InvestmentModel object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(8);
+          fbb.startTable(9);
           fbb.addInt64(1, object.id);
           fbb.addOffset(2, nameOffset);
           fbb.addFloat64(3, object.price);
           fbb.addFloat64(4, object.averagePrice);
           fbb.addFloat64(5, object.quantity);
+          fbb.addInt64(7, object.updatedAt);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -317,12 +323,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
               const fb.Float64Reader().vTableGet(buffer, rootOffset, 12, 0);
           final quantityParam =
               const fb.Float64Reader().vTableGet(buffer, rootOffset, 14, 0);
+          final updatedAtParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0);
           final object = InvestmentModel(
               id: idParam,
               name: nameParam,
               price: priceParam,
               averagePrice: averagePriceParam,
-              quantity: quantityParam);
+              quantity: quantityParam,
+              updatedAt: updatedAtParam);
 
           return object;
         }),
@@ -457,6 +466,10 @@ class InvestmentModel_ {
   /// See [InvestmentModel.quantity].
   static final quantity =
       obx.QueryDoubleProperty<InvestmentModel>(_entities[2].properties[4]);
+
+  /// See [InvestmentModel.updatedAt].
+  static final updatedAt =
+      obx.QueryIntegerProperty<InvestmentModel>(_entities[2].properties[5]);
 }
 
 /// [InvestmentWalletModel] entity fields to define ObjectBox queries.

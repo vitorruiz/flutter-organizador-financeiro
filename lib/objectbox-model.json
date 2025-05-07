@@ -48,7 +48,7 @@
     },
     {
       "id": "3:1587952917490308533",
-      "lastPropertyId": "7:5888586994069415328",
+      "lastPropertyId": "8:7050352512338269889",
       "name": "InvestmentModel",
       "properties": [
         {
@@ -76,6 +76,11 @@
           "id": "6:3224617259458797731",
           "name": "quantity",
           "type": 8
+        },
+        {
+          "id": "8:7050352512338269889",
+          "name": "updatedAt",
+          "type": 6
         }
       ],
       "relations": []

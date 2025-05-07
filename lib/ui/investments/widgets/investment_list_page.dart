@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils.dart';
@@ -6,7 +7,7 @@ import '../view_models/investments_viewmodel.dart';
 import 'create_investment_screen.dart';
 
 class InvestmentListScreen extends StatelessWidget {
-  const InvestmentListScreen({super.key});
+  const InvestmentListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class InvestmentListScreen extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: ListenableBuilder(
           listenable: viewModel.loadInvestmentList,
           builder: (context, child) {
@@ -32,11 +33,13 @@ class InvestmentListScreen extends StatelessWidget {
               separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final inv = investments[index];
-                // Define positive or negative rentability
                 final rentValue = inv.rentability();
                 final isPositive = rentValue >= 0;
                 final icon = isPositive ? Icons.trending_up : Icons.trending_down;
                 final color = isPositive ? Colors.green : Colors.red;
+
+                final date = DateTime.fromMillisecondsSinceEpoch(inv.updatedAt);
+                final formattedTime = DateFormat('dd/MM/y').format(date);
 
                 return InkWell(
                   onTap: () async {
@@ -49,11 +52,23 @@ class InvestmentListScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Investment Name
                         Expanded(
-                          child: Text(inv.name, style: Theme.of(context).textTheme.titleMedium),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(inv.name, style: Theme.of(context).textTheme.titleMedium),
+                              if (formattedTime.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  formattedTime,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall?.copyWith(color: Colors.grey[600]),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                        // Values and rentability
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [

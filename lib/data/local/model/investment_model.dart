@@ -11,6 +11,7 @@ class InvestmentModel {
     required this.price,
     required this.averagePrice,
     required this.quantity,
+    required this.updatedAt,
   });
 
   factory InvestmentModel.fromDomain(Investment investment) => InvestmentModel(
@@ -19,6 +20,7 @@ class InvestmentModel {
     averagePrice: investment.averagePrice,
     price: investment.price,
     quantity: investment.quantity,
+    updatedAt: investment.updatedAt,
   );
   
   @Id()
@@ -27,6 +29,7 @@ class InvestmentModel {
   double price;
   double averagePrice;
   double quantity;
+  int updatedAt = DateTime.now().millisecondsSinceEpoch;
 
   Investment toDomain() {
     return Investment(
@@ -35,6 +38,7 @@ class InvestmentModel {
       averagePrice: averagePrice,
       price: price,
       quantity: quantity,
+      updatedAt: updatedAt,
     );
   }
 }
