@@ -15,8 +15,8 @@ class DashboardViewmodel extends ChangeNotifier {
     required InvestmentRepository investmentRepository,
   }) : _accountBalanceRepository = accountBalanceRepository,
        _investmentRepository = investmentRepository {
-    loadTotalBalance = Command0(_loadTotalBalance)..execute();
-    loadTotalInvestmentsData = Command0(_loadTotalInvestmentsData)..execute();
+    loadTotalBalance = Command0(_loadTotalBalance);
+    loadTotalInvestmentsData = Command0(_loadTotalInvestmentsData);
   }
 
   final Logger _log = Logger('DashboardViewmodel');
@@ -35,7 +35,9 @@ class DashboardViewmodel extends ChangeNotifier {
 
   Future<Result<void>> _loadTotalBalance() async {
     try {
-      final Result<List<AccountBalance>> resultAccounts = Result.ok(await _accountBalanceRepository.getAll());
+      final Result<List<AccountBalance>> resultAccounts = Result.ok(
+        await _accountBalanceRepository.getAll(),
+      );
       switch (resultAccounts) {
         case Error():
           _log.warning('Failed to load stored ItineraryConfig', resultAccounts.error);
@@ -43,7 +45,9 @@ class DashboardViewmodel extends ChangeNotifier {
         case Ok():
       }
 
-      final Result<List<Investment>> resultInvestments = Result.ok(await _investmentRepository.getAll());
+      final Result<List<Investment>> resultInvestments = Result.ok(
+        await _investmentRepository.getAll(),
+      );
       switch (resultInvestments) {
         case Error():
           _log.warning('Failed to load stored ItineraryConfig', resultInvestments.error);

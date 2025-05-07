@@ -20,6 +20,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
 
     viewModel = context.read<DashboardViewmodel>();
+
+    viewModel.loadTotalBalance.execute();
+    viewModel.loadTotalInvestmentsData.execute();
   }
 
   @override
@@ -69,10 +72,7 @@ Widget _cardBalanceResume(BuildContext context, String title, double balance) {
         child: Column(
           children: <Widget>[
             Text(title, style: Theme.of(context).textTheme.titleLarge),
-            Text(
-              formatToCurrency(balance),
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
+            Text(formatToCurrency(balance), style: Theme.of(context).textTheme.displaySmall),
           ],
         ),
       ),

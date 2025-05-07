@@ -20,8 +20,9 @@ class InvestmentWalletOptionModel {
           walletPercentage: option.walletPercentage,
           value: option.value,
         )
-        ..investment.target = InvestmentModel.fromDomain(option.investment!)
-        ..wallet.target = InvestmentWalletModel.fromDomain(option.wallet);
+        ..investment.target =
+            option.investment != null ? InvestmentModel.fromDomain(option.investment!) : null;
+  // ..wallet.target = InvestmentWalletModel.fromDomain(option.wallet);
 
   @Id()
   int id = 0;
@@ -29,7 +30,7 @@ class InvestmentWalletOptionModel {
   double walletPercentage;
   double value;
 
-  final ToOne<InvestmentWalletModel> wallet = ToOne<InvestmentWalletModel>();
+  // final ToOne<InvestmentWalletModel> wallet = ToOne<InvestmentWalletModel>();
   final ToOne<InvestmentModel> investment = ToOne<InvestmentModel>();
 
   InvestmentWalletOption toDomain() {
@@ -39,7 +40,7 @@ class InvestmentWalletOptionModel {
       walletPercentage: walletPercentage,
       value: value,
       investment: investment.target?.toDomain(),
-      wallet: wallet.target!.toDomain(),
+      // wallet: wallet.target!.toDomain(),
     );
   }
 }

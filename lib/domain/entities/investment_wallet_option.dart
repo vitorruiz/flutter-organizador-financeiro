@@ -8,14 +8,15 @@ class InvestmentWalletOption {
     required this.name,
     required this.walletPercentage,
     required this.value,
-    required this.wallet,
+    // required this.wallet,
     this.investment,
   }) : id = id ?? 0;
+
   int id;
   String name;
   double walletPercentage;
   double value;
-  InvestmentWallet wallet;
+  // InvestmentWallet wallet;
   Investment? investment;
 
   double amount() {

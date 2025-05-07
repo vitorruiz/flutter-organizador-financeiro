@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../domain/entities/investment.dart';
-import '../../widgets/item_summary_card.dart';
+import '../../../common/utils.dart';
 import '../view_models/investments_viewmodel.dart';
 import 'create_investment_screen.dart';
 
@@ -11,47 +10,76 @@ class InvestmentListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final InvestmentsViewmodel viewModel = context.read<InvestmentsViewmodel>();
+    final viewModel = context.read<InvestmentsViewmodel>();
 
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(24.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: ListenableBuilder(
           listenable: viewModel.loadInvestmentList,
-          builder: (BuildContext context, Widget? child) {
-            if (viewModel.loadInvestmentList.completed && child != null) {
-              return child;
-            }
-
+          builder: (context, child) {
             if (viewModel.loadInvestmentList.running) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            if (viewModel.investmentList.isNotEmpty) {
-              return ListView.separated(
-                itemCount: viewModel.investmentList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final Investment investment = viewModel.investmentList[index];
-                  return ItemSummaryCard(
-                    title: investment.name,
-                    balance: investment.balance(),
-                    rentability: investment.formattedRentability(),
-                    onClick: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => CreateInvestmentScreen(investment: investment),
-                        ),
-                      );
-                    },
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const SizedBox(height: 10);
-                },
-              );
+            final investments = viewModel.investmentList;
+            if (investments.isEmpty) {
+              return const Center(child: Text('Você ainda não possui nenhum investimento'));
             }
 
-            return const Center(child: Text('Você ainda não possui nenhum investmento'));
+            return ListView.separated(
+              itemCount: investments.length,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final inv = investments[index];
+                // Define positive or negative rentability
+                final rentValue = inv.rentability();
+                final isPositive = rentValue >= 0;
+                final icon = isPositive ? Icons.trending_up : Icons.trending_down;
+                final color = isPositive ? Colors.green : Colors.red;
+
+                return InkWell(
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => CreateInvestmentScreen(investment: inv)),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Investment Name
+                        Expanded(
+                          child: Text(inv.name, style: Theme.of(context).textTheme.titleMedium),
+                        ),
+                        // Values and rentability
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              formatToCurrency(inv.balance()),
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(icon, size: 16, color: color),
+                                const SizedBox(width: 4),
+                                Text(
+                                  inv.formattedRentability(),
+                                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
           },
         ),
       ),
@@ -59,11 +87,10 @@ class InvestmentListScreen extends StatelessWidget {
         onPressed: () async {
           await Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (BuildContext context) => const CreateInvestmentScreen()));
+          ).push(MaterialPageRoute(builder: (_) => const CreateInvestmentScreen()));
         },
-        tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

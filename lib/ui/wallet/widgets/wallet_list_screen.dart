@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../common/utils.dart';
 import '../../../domain/entities/investment_wallet.dart';
 import '../view_models/wallet_list_viewmodel.dart';
+import 'wallet_detail_screen.dart';
 
 class WalletListScreen extends StatefulWidget {
   const WalletListScreen({super.key});
@@ -111,7 +112,11 @@ class _WalletListScreenState extends State<WalletListScreen> {
                     title: Text(wallet.name),
                     subtitle: Text(formatToCurrency(wallet.valueToInvest)),
                     onTap: () {
-                      // TODO: Navegar para detalhes/opções da carteira
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => WalletDetailScreen(wallet: wallet),
+                        ),
+                      );
                     },
                   ),
                 );
